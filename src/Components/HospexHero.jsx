@@ -1,16 +1,48 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { MapPin, CalendarDays } from "lucide-react";
 
 import doctorImage from "../assets/doctor.svg";
 import logoImage from "../assets/logo.svg";
 import rightBgImage from "../assets/right-bg.svg";
 
+const CounterItem = ({ target, suffix = "", label, duration = 2000 }) => {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    let start = 0;
+    const increment = target / (duration / 16);
+
+    const timer = setInterval(() => {
+      start += increment;
+
+      if (start >= target) {
+        setCount(target);
+        clearInterval(timer);
+      } else {
+        setCount(Math.floor(start));
+      }
+    }, 16);
+
+    return () => clearInterval(timer);
+  }, [target, duration]);
+
+  return (
+    <div>
+      <h3 className="text-4xl font-bold">
+        {count}
+        {suffix}
+      </h3>
+      <p className="text-gray-500 mt-1">{label}</p>
+    </div>
+  );
+};
+
 const HospexHero = () => {
   return (
     <section className="relative overflow-hidden bg-[#f5f5f5] min-h-screen">
       <div className="max-w-full mx-auto px-6 lg:pl-12 lg:pr-0">
         <div className="grid lg:grid-cols-2 items-center min-h-screen">
-          
+
           {/* LEFT SIDE */}
           <div className="relative z-10">
             <img src={logoImage} alt="Logo" className="w-[180px] mb-10" />
@@ -41,32 +73,23 @@ const HospexHero = () => {
               Book Your Stall
             </button>
 
+            {/* Animated Counters */}
             <div className="flex gap-10 mt-14 flex-wrap">
-              <div>
-                <h3 className="text-4xl font-bold">100+</h3>
-                <p className="text-gray-500 mt-1">Exhibitors</p>
-              </div>
-              <div>
-                <h3 className="text-4xl font-bold">5000+</h3>
-                <p className="text-gray-500 mt-1">B2B Visitors</p>
-              </div>
-              <div>
-                <h3 className="text-4xl font-bold">Global</h3>
-                <p className="text-gray-500 mt-1">Delegation</p>
-              </div>
+              <CounterItem target={100} suffix="+" label="Exhibitors" />
+              <CounterItem target={5000} suffix="+" label="B2B Visitors" />
+              <CounterItem target={50} suffix="+" label="Global Delegation" />
             </div>
           </div>
 
           {/* RIGHT SIDE */}
           <div className="relative min-h-screen">
-            {/* Blue background */}
             <img
               src={rightBgImage}
               alt=""
               className="absolute inset-0 w-full h-full object-cover rounded-tl-[90px]"
             />
 
-            {/* Quote content */}
+            {/* Quote */}
             <div className="absolute top-24 right-12 text-white max-w-[500px] z-10 hidden lg:block">
               <div className="text-6xl font-bold mb-4">“</div>
               <p className="text-xl text-[#BCD1FF] leading-relaxed mb-6">
@@ -79,7 +102,7 @@ const HospexHero = () => {
               </p>
             </div>
 
-            {/* Center doctor crossing both sections */}
+            {/* Doctor */}
             <div className="absolute left-[-240px] top-1/2 -translate-y-1/2 z-20 flex flex-col items-center">
               <img
                 src={doctorImage}
@@ -87,7 +110,7 @@ const HospexHero = () => {
                 className="max-h-full object-contain"
               />
 
-              {/* Info card */}
+              {/* Info Card */}
               <div className="absolute right-[-200px] top-[52%] bg-white rounded-3xl shadow-2xl p-6 w-[260px]">
                 <div className="flex items-center gap-3 mb-5">
                   <MapPin className="w-5 h-5" />
@@ -108,6 +131,7 @@ const HospexHero = () => {
               </button>
             </div>
           </div>
+
         </div>
       </div>
     </section>
